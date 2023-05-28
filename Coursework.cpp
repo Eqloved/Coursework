@@ -1,11 +1,12 @@
 #include "Function.h"
 
 int MenuCondition;
+
 void Menu()
 {
 	cout << "Выберите действие: " << endl
 		<< "(0) Выход из программы" << endl
-		<< "(1) Ввод данных" << endl
+		<< "(1) Ввод/считывание данных" << endl
 		<< "(2) Вывод данных" << endl
 		<< "(3) Изменение данных" << endl
 		<< "(4) Удаление данных" << endl
@@ -16,7 +17,7 @@ void Menu()
 	cin >> MenuCondition;
 };
 
-void main()
+int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
@@ -26,30 +27,29 @@ void main()
 	int _action = 0;
 	int amountofdata = 0;
 	string filename;
-
 	Record* d = new Record[amountofdata];
 
-	while (MenuCondition != 0)
+	while (true)
 	{
 		switch (MenuCondition)
 		{
 		case (1):
 			system("cls");
 
-			cout << "Ввод вручную или из файла(1 или 2)?: ";
+			cout << "Ввести данные вручную или считать из файла(1 или 2)?: ";
 			cin >> _action;
 
 			system("cls");
 
-			if (_action == 1) {
-				RecordEntry(d, amountofdata);
-			}
-			else
+			if (_action == 1) 
 			{
-				/*cout << "Введите название  файла: ";
-				cin >> filename;input.txt*/
-
-				ReadRecord(d, amountofdata, "input.txt");
+				RecordFunctions::RecordEntry(d, amountofdata);
+			}
+			if(_action == 2)
+			{
+				cout << "Введите название  файла: ";
+				cin >> filename;
+				RecordFunctions::ReadRecord(d, amountofdata, filename);
 			}
 			system("pause");
 			system("cls");
@@ -60,7 +60,7 @@ void main()
 
 			if (amountofdata != 0)
 			{
-				Print(d, amountofdata);
+				RecordFunctions::Print(d, amountofdata);
 			}
 			else
 				cout << "Файл пуст!" << endl;
@@ -73,7 +73,7 @@ void main()
 
 			if (amountofdata != 0)
 			{
-				ChangeRecord(d, amountofdata);
+				RecordFunctions::ChangeRecord(d, amountofdata);
 			}
 			else
 				cout << "Файл пуст!" << endl;
@@ -85,7 +85,7 @@ void main()
 			system("cls");
 			if (amountofdata != 0)
 			{
-				DeleteRecord(d, amountofdata);
+				RecordFunctions::DeleteRecord(d, amountofdata);
 			}
 			else
 				cout << "Данные отсутствуют!" << endl;
@@ -97,7 +97,7 @@ void main()
 			system("cls");
 			if (amountofdata != 0)
 			{
-				AddRecord(d, amountofdata);
+				RecordFunctions::AddRecord(d, amountofdata);
 				amountofdata++;
 			}
 			else
@@ -110,7 +110,7 @@ void main()
 			system("csl");
 			if (amountofdata != 0)
 			{
-				Task(d, amountofdata);
+				RecordFunctions::Task(d, amountofdata);
 			}
 			else
 				cout << "Данные отсутствуют!" << endl;
@@ -124,7 +124,7 @@ void main()
 			cin >> filename;
 
 			if (amountofdata != 0) {
-				SaveRecord(d, amountofdata, filename);
+				RecordFunctions::SaveRecord(d, amountofdata, filename);
 			}
 			else
 				cout << "Невозможно выполнить сохранение!";
@@ -138,4 +138,6 @@ void main()
 			break;
 		}
 	}
+
+	return 0;
 };
