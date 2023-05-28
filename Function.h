@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <Windows.h>
 #include <string>
@@ -22,7 +24,7 @@ struct Birth_date
 
 struct Subject
 {
-	char Subject_name[20];
+	char Subject_name[40];
 	int subject_mark;
 };
 
@@ -131,7 +133,8 @@ public:
 				for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
 				{
 					cout << "Введите название предмета: ";
-					cin >> d[i]._Session[j]._Subject[m].Subject_name;
+					cin.ignore();
+					cin.getline(d[i]._Session[j]._Subject[m].Subject_name, 40);
 
 					cout << "Введите оценку за предмет: ";
 					while (!(cin >> d[i]._Session[j]._Subject[m].subject_mark))
@@ -169,7 +172,7 @@ public:
 				reading.read((char*)&d[i]._Birhtdate.year, sizeof(d[i]._Birhtdate.year));
 
 				reading.read((char*)&d[i].admission_year, sizeof(d[i].admission_year));
-				
+
 				reading.read((char*)&d[i].gender, sizeof(d[i].gender));
 
 				reading.read(d[i].institute, sizeof(d[i].institute));
@@ -314,7 +317,8 @@ public:
 				for (int m = 0; m < d[_n]._Session[j].SubQuantity; m++)
 				{
 					cout << "Введите название предмета: ";
-					cin >> d[_n]._Session[j]._Subject[m].Subject_name;
+					cin.ignore();
+					cin.getline(d[_n]._Session[j]._Subject[m].Subject_name, 40);
 
 					cout << "Введите оценку за предмет: ";
 					while (!(cin >> d[_n]._Session[j]._Subject[m].subject_mark))
@@ -560,7 +564,7 @@ public:
 			cout << "Ошибка сохранения файла!" << endl;
 		record.close();
 	}
-	static void Task(Record* d, int n)
+	/*static void Task(Record* d, int n)
 	{
 
 
@@ -574,7 +578,7 @@ public:
 				}
 			}
 		}
-		int gender = d[0].gender;
+		int Currentgender = d[0].gender;
 		int maxMarkindex = 0;
 		int minMarkindex = 0;
 		double maxMark = 0.0;
@@ -582,20 +586,83 @@ public:
 
 		for (int i = 0; i < n; i++)
 		{
-			if (d[i].gender != gender)
+			if (d[i].gender != Currentgender)
 			{
-				cout << "Студент с наибольшей успеваемостью среди мужского пола: " << gender << ":" << endl;
+				cout << "Студент с наибольшей успеваемостью среди мужского пола: " << Currentgender << ":" << endl;
 				cout << d[maxMarkindex]._Initial.surname << "" << d[maxMarkindex]._Initial.name << "" << d[maxMarkindex]._Initial.secondname << endl;
 
-				cout << "Студент с наименьшей успеваемостью среди женского пола: " << gender << ":" << endl;
+				cout << "Студент с наименьшей успеваемостью среди женского пола: " << Currentgender << ":" << endl;
 				cout << d[minMarkindex]._Initial.surname << "" << d[minMarkindex]._Initial.name << "" << d[minMarkindex]._Initial.secondname << "" << endl;
 			}
-			cout << "Студент с наибольшей успеваемостью среди мужского пола: " << gender << ":" << endl;
+			cout << "Студент с наибольшей успеваемостью среди мужского пола: " << Currentgender << ":" << endl;
 			cout << d[maxMarkindex]._Initial.surname << "" << d[maxMarkindex]._Initial.name << "" << d[maxMarkindex]._Initial.secondname << endl;
 
-			cout << "Студент с наименьшей успеваемостью среди женского пола: " << gender << ":" << endl;
+			cout << "Студент с наименьшей успеваемостью среди женского пола: " << Currentgender << ":" << endl;
 			cout << d[minMarkindex]._Initial.surname << "" << d[minMarkindex]._Initial.name << "" << d[minMarkindex]._Initial.secondname << "" << endl;
+
+			Currentgender = d[i].gender;
+			maxMarkindex = i;
+			minMarkindex = 0;
+			maxMark = 0.0;
+			minMark = 5.0;
+
+			double success = 0.0;
+			for (int j = 0; j < d[i].SessQuan; j++) 
+			{
+				for (int m = 0; m < d[i]._Session[j].SubQuantity; m++) 
+				{
+					success += d[i]._Session[j]._Subject[m].subject_mark;
+				}
+			}
+			double AVGmark = success / (d[i].SessQuan * d[i]._Session[0].SubQuantity);
+
+			if (AVGmark > maxMark) 
+			{
+				maxMark = AVGmark;
+				maxMarkindex = i;
+			}
+			if (AVGmark < minMark) 
+			{
+				minMark = AVGmark;
+				minMarkindex = i;
+			}
 		}
+		cout << "Студент с наибольшей успеваемостью среди пол";
+	}*/
+	static void Task(Record* d, int n) 
+	{
+			double AVGmark;
+			int choicecondition;
+			cout << "Выберите среди какого пола найти студентов с наименьше и наибольшей успеваемостью(М(1) или Ж(2)): ";
+			cin >> choicecondition;
+			switch (choicecondition) 
+			{
+			case(1):
+				if (choicecondition == 1) 
+				{
+					for (int i = 0; i < n; i++) 
+					{
+						float k = 0;
+						for (int f = 0; f < d[i].SessQuan; f++) 
+						{
+							k += d[i]._Session[f].SubQuantity;
+						}
+						if ((char*)&d[i].gender == "М" || (char*)&d[i].gender == "м") 
+						{
+							for (int j = 0; j < d[i].SessQuan; j++) 
+							{
+								for (int m = 0; m < d[i]._Session[j].SubQuantity; m++) 
+								{
+									for (int k = 0; k < d[i]._Session[j]._Subject[m].subject_mark; k++) 
+									{
+										AVGmark += d[i]._Session[j]._Subject[m].subject_mark
+									}
+								}
+							}
+
+						}
+					}
+				}
+			}
 	}
 };
-
