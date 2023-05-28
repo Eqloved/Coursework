@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4028)
 
 #include <iostream>
 #include <Windows.h>
@@ -379,36 +380,6 @@ public:
 		else
 			cout << "Неверно введен номер элемента" << endl;
 	}
-	/*static void FindAVGmark(Record* (&d), int n)
-	{
-		float c = 0;
-		float k = 0;
-		float maxAVGmark = 0;
-
-		for (int i = 0; i < n; i++)
-		{
-			for (int f = 0; f < d[i].SessQuan; f++)
-			{
-				k += d[i]._Session[f].SubQuantity;
-			}
-			for (int j = 0; j < d[i].SessQuan; j++)
-			{
-				for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
-				{
-					c += d[i]._Session[j]._Subject[m].subject_mark;
-				}
-			}
-			d[i].AVGmark = c / k;
-			while (d[i].AVGmark > d[i + 1].AVGmark)
-			{
-				maxAVGmark += d[i + 1].AVGmark;
-			}
-			if (maxAVGmark)
-			{
-
-			}
-		}
-	}*/
 	static void Copy_Task(Record* (&d_n), Record* (&d_o), int n)
 	{
 		for (int i = 0; i < n; i++)
@@ -565,169 +536,113 @@ public:
 			cout << "Ошибка сохранения файла!" << endl;
 		record.close();
 	}
-	/*static void Task(Record* d, int n)
-	{
-
-
-		for (int i = 0; i < n; i++)
-		{
-			for (int j = i + 1; j < n; j++)
-			{
-				if (d[i].gender > d[j].gender)
-				{
-					swap(d[i], d[j]);
-				}
-			}
-		}
-		int Currentgender = d[0].gender;
-		int maxMarkindex = 0;
-		int minMarkindex = 0;
-		double maxMark = 0.0;
-		double minMark = 5.0;
-
-		for (int i = 0; i < n; i++)
-		{
-			if (d[i].gender != Currentgender)
-			{
-				cout << "Студент с наибольшей успеваемостью среди мужского пола: " << Currentgender << ":" << endl;
-				cout << d[maxMarkindex]._Initial.surname << "" << d[maxMarkindex]._Initial.name << "" << d[maxMarkindex]._Initial.secondname << endl;
-
-				cout << "Студент с наименьшей успеваемостью среди женского пола: " << Currentgender << ":" << endl;
-				cout << d[minMarkindex]._Initial.surname << "" << d[minMarkindex]._Initial.name << "" << d[minMarkindex]._Initial.secondname << "" << endl;
-			}
-			cout << "Студент с наибольшей успеваемостью среди мужского пола: " << Currentgender << ":" << endl;
-			cout << d[maxMarkindex]._Initial.surname << "" << d[maxMarkindex]._Initial.name << "" << d[maxMarkindex]._Initial.secondname << endl;
-
-			cout << "Студент с наименьшей успеваемостью среди женского пола: " << Currentgender << ":" << endl;
-			cout << d[minMarkindex]._Initial.surname << "" << d[minMarkindex]._Initial.name << "" << d[minMarkindex]._Initial.secondname << "" << endl;
-
-			Currentgender = d[i].gender;
-			maxMarkindex = i;
-			minMarkindex = 0;
-			maxMark = 0.0;
-			minMark = 5.0;
-
-			double success = 0.0;
-			for (int j = 0; j < d[i].SessQuan; j++)
-			{
-				for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
-				{
-					success += d[i]._Session[j]._Subject[m].subject_mark;
-				}
-			}
-			double AVGmark = success / (d[i].SessQuan * d[i]._Session[0].SubQuantity);
-
-			if (AVGmark > maxMark)
-			{
-				maxMark = AVGmark;
-				maxMarkindex = i;
-			}
-			if (AVGmark < minMark)
-			{
-				minMark = AVGmark;
-				minMarkindex = i;
-			}
-		}
-		cout << "Студент с наибольшей успеваемостью среди пол";
-	}*/
 	static void Task(Record* d, int n)
 	{
 		int choicecondition;
-		cout << "Выберите среди какого пола найти студентов с наименьше и наибольшей успеваемостью(М(1) или Ж(2)): ";
+		cout << "Выберите среди какого пола найти студентов с наименьшей и наибольшей успеваемостью (М(1) или Ж(2)): ";
 		cin >> choicecondition;
+
 		switch (choicecondition)
 		{
-		case(1):
-			if (choicecondition == 1)
+		case 1:
+		{
+			float maxAVGmark = 0;
+			float minAVGmark = 5.0;
+			int maxindex = 0;
+			int minindex = 0;
+
+			for (int i = 0; i < n; i++)
 			{
-				float maxAVGmark = 0;
-				float minAVGmark = 5.0;
-				int maxindex = 0;
-				int minindex = 0;
-				for (int i = 0; i < n; i++)
+				float subjectCount = 0;
+				for (int f = 0; f < d[i].SessQuan; f++)
 				{
-					float k = 0;
-					for (int f = 0; f < d[i].SessQuan; f++)
+					subjectCount += d[i]._Session[f].SubQuantity;
+				}
+
+				if (d[i].gender == 'М' || d[i].gender == 'м')
+				{
+					float AVGmark = 0;
+					for (int j = 0; j < d[i].SessQuan; j++)
 					{
-						k += d[i]._Session[f].SubQuantity;
-					}
-					if ((char*)&d[i].gender == "М" || (char*)&d[i].gender == "м")
-					{
-						float AVGmark = 0;
-						for (int j = 0; j < d[i].SessQuan; j++)
+						for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
 						{
-							for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
-							{
-								for (int k = 0; k < d[i]._Session[j]._Subject[m].subject_mark; k++)
-								{
-									AVGmark += d[i]._Session[j]._Subject[m].subject_mark;
-								}
-							}
-						}
-						d[i].AVGmark = AVGmark / k;
-						if (d[i].AVGmark > maxAVGmark) 
-						{
-							maxAVGmark = d[i].AVGmark;
-							maxindex = i;
-						}
-						if (d[i].AVGmark < minAVGmark) 
-						{
-							minAVGmark = d[i].AVGmark;
-							minindex = i;
+							AVGmark += d[i]._Session[j]._Subject[m].subject_mark;
 						}
 					}
-					cout << "ФИО студента с наибольшей успеваемостью: " << d[maxindex]._Initial.surname << "" << d[maxindex]._Initial.name << "" << d[maxindex]._Initial.secondname << endl;
-					cout << "Средний балл: " << d[maxindex].AVGmark << endl;
-					cout << "ФИО студента с наименьшей успеваемостью: " << d[minindex]._Initial.surname << "" << d[minindex]._Initial.name << "" << d[minindex]._Initial.secondname << endl;
-					cout << "Средний балл: " << d[minindex].AVGmark << endl;
+
+					d[i].AVGmark = AVGmark / subjectCount;
+
+					if (d[i].AVGmark > maxAVGmark)
+					{
+						maxAVGmark = d[i].AVGmark;
+						maxindex = i;
+					}
+					if (d[i].AVGmark < minAVGmark)
+					{
+						minAVGmark = d[i].AVGmark;
+						minindex = i;
+					}
 				}
 			}
 
-		case(2):
-			if (choicecondition == 2)
+			// Вывод результатов
+			cout << "Студент с наибольшей успеваемостью: " << d[maxindex]._Initial.surname << " " << d[maxindex]._Initial.name << " " << d[maxindex]._Initial.secondname << endl;
+			cout << "Средний балл: " << maxAVGmark << endl;
+			cout << "Студент с наименьшей успеваемостью: " << d[minindex]._Initial.surname << " " << d[minindex]._Initial.name << " " << d[minindex]._Initial.secondname << endl;
+			cout << "Средний балл: " << minAVGmark << endl;
+		}
+		break;
+		case 2:
+		{
+			float maxAVGmark = 0;
+			float minAVGmark = 5.0;
+			int maxindex = 0;
+			int minindex = 0;
+
+			for (int i = 0; i < n; i++)
 			{
-				float maxAVGmark = 0;
-				float minAVGmark = 5.0;
-				int maxindex = 0;
-				int minindex = 0;
-				for (int i = 0; i < n; i++)
+				float subjectCount = 0;
+				for (int f = 0; f < d[i].SessQuan; f++)
 				{
-					float k = 0;
-					for (int f = 0; f < d[i].SessQuan; f++)
+					subjectCount += d[i]._Session[f].SubQuantity;
+				}
+
+				if (d[i].gender == 'Ж' || d[i].gender == 'ж')
+				{
+					float AVGmark = 0;
+					for (int j = 0; j < d[i].SessQuan; j++)
 					{
-						k += d[i]._Session[f].SubQuantity;
-					}
-					if ((char*)&d[i].gender == "Ж" || (char*)&d[i].gender == "ж")
-					{
-						float AVGmark = 0;
-						for (int j = 0; j < d[i].SessQuan; j++)
+						for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
 						{
-							for (int m = 0; m < d[i]._Session[j].SubQuantity; m++)
-							{
-								for (int k = 0; k < d[i]._Session[j]._Subject[m].subject_mark; k++)
-								{
-									AVGmark += d[i]._Session[j]._Subject[m].subject_mark;
-								}
-							}
-						}
-						d[i].AVGmark = AVGmark / k;
-						if (d[i].AVGmark > maxAVGmark)
-						{
-							maxAVGmark = d[i].AVGmark;
-							maxindex = i;
-						}
-						if (d[i].AVGmark < minAVGmark)
-						{
-							minAVGmark = d[i].AVGmark;
-							minindex = i;
+							AVGmark += d[i]._Session[j]._Subject[m].subject_mark;
 						}
 					}
-					cout << "ФИО студента с наибольшей успеваемостью: " << d[maxindex]._Initial.surname << "" << d[maxindex]._Initial.name << "" << d[maxindex]._Initial.secondname << endl;
-					cout << "Средний балл: " << d[maxindex].AVGmark << endl;
-					cout << "ФИО студента с наименьшей успеваемостью: " << d[minindex]._Initial.surname << "" << d[minindex]._Initial.name << "" << d[minindex]._Initial.secondname << endl;
-					cout << "Средний балл: " << d[minindex].AVGmark << endl;
+
+					d[i].AVGmark = AVGmark / subjectCount;
+
+					if (d[i].AVGmark > maxAVGmark)
+					{
+						maxAVGmark = d[i].AVGmark;
+						maxindex = i;
+					}
+					if (d[i].AVGmark < minAVGmark)
+					{
+						minAVGmark = d[i].AVGmark;
+						minindex = i;
+					}
 				}
 			}
+
+			// Вывод результатов
+			cout << "ФИО студента с наибольшей успеваемостью: " << d[maxindex]._Initial.surname << " " << d[maxindex]._Initial.name << " " << d[maxindex]._Initial.secondname << endl;
+			cout << "Средний балл: " << maxAVGmark << endl;
+			cout << "ФИО студента с наименьшей успеваемостью: " << d[minindex]._Initial.surname << " " << d[minindex]._Initial.name << " " << d[minindex]._Initial.secondname << endl;
+			cout << "Средний балл: " << minAVGmark << endl;
+		}
+		break;
+		default:
+			cout << "Некорректный выбор пола." << endl;
+			break;
 		}
 	}
 
